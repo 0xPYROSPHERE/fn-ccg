@@ -1,0 +1,48 @@
+function isInIframeAndSameDomain() {
+    try {
+        // Check if the current page is within an iframe
+        if (window.self !== window.parent) {
+            // Check if the parent page (window.parent) is from the same domain
+            if (window.parent.location.hostname === window.location.hostname) {
+                return {
+                    inIframe: true,
+                    sameDomain: true
+                };
+            } else {
+                return {
+                    inIframe: true,
+                    sameDomain: false
+                };
+            }
+        } else {
+            // The page is not in an iframe
+            return {
+                inIframe: false,
+                sameDomain: false
+            };
+        }
+    } catch (e) {
+        // If accessing window.parent.location.hostname throws an error, 
+        // it means the iframe is on a different domain
+        return {
+            inIframe: true,
+            sameDomain: false
+        };
+    }
+}
+
+// Call the function and check the result
+const result = isInIframeAndSameDomain();
+
+let canRedir = true;
+try {
+    const query = window.location.search;
+    if (query) {
+        const params = new URLSearchParams(query);
+        if (params.has('school') && params.get('school') === '1') {
+            canRedir = false;
+        }
+    }
+} catch (error) {
+    console.error("Error parsing URL parameters:", error);
+}
